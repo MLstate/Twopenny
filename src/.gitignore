@@ -1,0 +1,6 @@
+_tracks
+_build
+*.exe
+*.opx
+*.log
+*~
