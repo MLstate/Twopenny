@@ -15,6 +15,12 @@ package mlstate.twopenny
 server =
   urls = parser
   | "/" -> Pages.main_page()
-  | "/user/" user=(.*) -> Pages.user_page(user)
-  | "/label/" label=(.*) -> Pages.label_page(label)
+  | "/user/" user=(.*) ->
+    Text.to_string(user)
+    |> User.mk_ref(_)
+    |> Pages.user_page(_)
+  | "/label/" label=(.*) ->
+    Text.to_string(label)
+    |> Label.mk_ref(_)
+    |> Pages.label_page(_)
   Server.simple_server(urls)

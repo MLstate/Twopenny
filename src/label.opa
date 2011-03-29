@@ -12,7 +12,8 @@ Label = {{
   mk_ref(label : string) : Label.ref =
     @wrap(label)
 
-  to_anchor(label : Label.ref) : xhtml =
-    <A href="/label/{@unwrap(label)}">#{label}</>
+  to_anchor(label_ref : Label.ref) : xhtml =
+    label = @unwrap(label_ref)
+    <a href="/label/{label}">#{label}</>
 
 }}

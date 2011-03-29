@@ -19,8 +19,13 @@ Pages = {{
   main_page() =
     html("Twopenny", unimplemented)
 
-  user_page(user) =
-    html("Twopenny :: {user}", unimplemented)
+  user_page(user : User.ref) =
+    content =
+      <>
+        <h1>User: {@unwrap(user)}</>
+        {Msg.msgbox(user)}
+      </>
+    html("Twopenny :: {user}", content)
 
   label_page(label) =
     html("Twopenny :: {label}", unimplemented)
