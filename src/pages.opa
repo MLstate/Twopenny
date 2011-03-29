@@ -23,7 +23,7 @@ Pages = {{
     content =
       <>
         <h1>User: {@unwrap(user)}</>
-        {Msg.msgbox(user)}
+        {Msg.msgbox("msgbox", user)}
       </>
     html("Twopenny :: {user}", content)
 

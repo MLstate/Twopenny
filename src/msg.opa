@@ -5,7 +5,7 @@
 
 package mlstate.twopenny
 
-import widgets.button
+import widgets.{core,button}
 
 type Msg.t = private(string)
 
@@ -15,7 +15,10 @@ type Msg.segment =
   / { url : Uri.uri }
   / { user : User.ref }
 
-@both_implem Msg = {{
+Msg =
+  MAXIMUM_MESSAGE_LENGTH = 140
+  REMAINING_MESSAGE_LENGTH = 20
+{{
 
   create(s : string) : Msg.t =
     @wrap(s)
@@ -45,7 +48,7 @@ type Msg.segment =
     content = List.map(render_segment, parse(msg))
     <div class="msg">{content}</>
 
-  submit_msg(user : User.ref, msgbox : dom, _) : void =
+  submit_msg(user : User.ref, msgbox : dom) = _ ->
     content = Dom.get_value(msgbox)
     msg = create(content)
     do Data.new_message(user, msg)
@@ -55,14 +58,45 @@ type Msg.segment =
     | {url=_}
     | {text=_} -> void
     do List.iter(index, parse(msg))
-    do exec([#msgs +<- render(msg)])
+    do exec([#msgs +<- <>{render(msg)}</>])
     void
 
-  msgbox(user : User.ref) : xhtml =
-    accept = WSimpleButton.html(uniq(), submit_msg(user, #msgbox, _), "Tweet")
-    inputbox = <textarea id=#msgbox />;
+  @private apply_css(css_style, dom) =
+    WStyler.add(WStyler.make_style(css_style), dom)
+
+  @client update_msg_counter(msgbox : dom, counter_id : string) = _ ->
+    remaining = Dom.get_value(msgbox)
+             |> String.length(_)
+             |> MAXIMUM_MESSAGE_LENGTH - _
+    counter_css =
+      if remaining < REMAINING_MESSAGE_LENGTH then
+        css { color: red }
+      else
+        []
+    counter_xhtml = <span>{remaining}</>
+                 |> apply_css(counter_css, _)
+    do exec([#{counter_id} <- counter_xhtml])
+    void
+
+  msgbox(id : string, user : User.ref) : xhtml =
+    counter_id = "{id}_counter"
+    accept = WButton.html(WButton.default_config, uniq(),
+      [({click}, submit_msg(user, #{id}))], <>Tweet!</>)
+    inputbox =
+       /* WARNING! If we change the function call below
+          into a closure then we have to be careful with
+          slicing, as at the moment this whole function ends
+          up on the server. But there must be a better
+          way of doing it than the repetition below... */
+      <textarea id=#{id}
+        onready={update_msg_counter(#{id}, counter_id)}
+        onkeypress={update_msg_counter(#{id}, counter_id)}
+        onchange={update_msg_counter(#{id}, counter_id)} />
+    counter =
+      <div id=#{counter_id}></>;
     <>
       {inputbox}
+      {counter}
       {accept}
       <div id=#msgs />
     </>
