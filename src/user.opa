@@ -12,4 +12,7 @@ User = {{
   mk_ref(user : string) : User.ref =
     @wrap(user)
 
+  to_anchor(user : User.ref) : xhtml =
+    <A href="/user/{@unwrap(user)}">@{user}</>
+
 }}
