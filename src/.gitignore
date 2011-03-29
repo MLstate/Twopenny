@@ -2,5 +2,6 @@ _tracks
 _build
 *.exe
 *.opx
+*.opx.broken
 *.log
 *~
