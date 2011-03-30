@@ -22,22 +22,31 @@ Msg = {{
     word = parser
     /* FIXME we probably want to extend the character set
              below. */
-    | word=([a-zA-Z0-9_\-]*) -> Text.to_string(word)
+    | word=([a-zA-Z0-9_\-]+) -> Text.to_string(word)
+    user_prefix = parser "@" -> void
+    label_prefix = parser "#" -> void
+    url_prefix = parser "http://" -> void
+    special_prefix = parser user_prefix | label_prefix | url_prefix;
     segment_parser = parser
-    | [@] user=word -> { user = User.mk_ref(user) }
-    | [#] label=word -> { label = Label.mk_ref(label) }
-    | &"http://" url=Uri.uri_parser -> ~{ url }
-    | txt=((![@#] .)+) -> // Warning! + not * ; otherwise it will loop
+    | user_prefix user=word -> { user = User.mk_ref(user) }
+    | label_prefix label=word -> { label = Label.mk_ref(label) }
+     /* careful here, Uri.uri_parser too liberal, as it parses things like
+        hey.ho as valid URLs; so we use "http://" prefix to recognize URLs */
+    | &url_prefix url=Uri.uri_parser -> ~{ url }
+     /* below we eat a complete [word] or a single non-word character; the
+        latter case alone may not be enough as we don't want:
+        sthhttp://sth to pass for an URL. */
+    | txt=((!special_prefix (word | .))+) -> // Warning! + not * ; otherwise it will loop
         { text = Text.to_string(txt) }
     msg_parser = parser res=segment_parser* -> res
     Parser.parse(msg_parser, @unwrap(msg))
 
   render(msg : Msg.t) : xhtml =
-    render_segment =
+     render_segment =
     | ~{ text } -> <>{text}</>
     | ~{ url } ->
-      url_string = Uri.to_string(url)
-      <A href={url_string}>{url_string}</>
+       // we add spaces around URLs to avoid collapsing them together with adjacent text
+      <> <a href={url}>{Uri.to_string(url)}</> </>
     | ~{ label } -> Label.to_anchor(label)
     | ~{ user } -> User.to_anchor(user)
     content = List.map(render_segment, parse(msg))
