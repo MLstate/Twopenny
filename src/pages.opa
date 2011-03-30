@@ -23,7 +23,7 @@ Pages = {{
     content =
       <>
         <h1>User: {@unwrap(user)}</>
-        {Msg.msgbox("msgbox", user)}
+        {WMsgBox.html("msgbox", Msg.submit_msg(user))}
       </>
     html("Twopenny :: {user}", content)
 
