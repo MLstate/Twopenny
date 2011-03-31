@@ -20,11 +20,16 @@ Pages = {{
     html("Twopenny", unimplemented)
 
   user_page(user : User.ref) =
+    submission = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
+    show_new_msg(msg) =
+      exec([#msgs +<- Msg.render(msg)])
     content =
       <>
         <h1>User: {@unwrap(user)}</>
-        {WMsgBox.html("msgbox", MsgFactory.submit(user))}
+        {submission}
+        <div id=#msgs />
       </>
+    do MsgFactory.subscribe_to_all(show_new_msg)
     html("Twopenny :: {user}", content)
 
   label_page(label) =

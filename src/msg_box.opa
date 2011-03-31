@@ -31,7 +31,7 @@ WMsgBox =
     Dom.get_value(#{get_input_text_id(id)})
 {{
 
-  @private @client update(id : string) = _ ->
+  @private @client update(id : string, mk_msg) = _ ->
     content = get_content(id)
     remaining = MAXIMUM_MESSAGE_LENGTH - String.length(content)
     counter_css =
@@ -46,7 +46,7 @@ WMsgBox =
     do exec([#{get_counter_id(id)} <- counter_xhtml])
     preview =
       if remaining > 0 then
-        Msg.create(content) |> Msg.render(_)
+        mk_msg(content) |> Msg.render(_)
       else
         MSG_TOO_LONG_WARNING
     do exec([#{get_preview_id(id)} <- preview])
@@ -55,7 +55,7 @@ WMsgBox =
          enabled)
     void
 
-  html(id : string, submit : string -> void) : xhtml =
+  html(id : string, mk_msg : string -> Msg.t, submit : Msg.t -> void) : xhtml =
     text_id = get_input_text_id(id)
     inputbox =
        /* WARNING! If we change the function call below
@@ -63,13 +63,13 @@ WMsgBox =
           slicing, as at the moment this whole function ends
           up on the server. But there must be a better
           way of doing it than the repetition below... */
-      <textarea id=#{text_id} onready={update(id)}
-        onkeyup={update(id)} onchange={update(id)} />
+      <textarea id=#{text_id} onready={update(id, mk_msg)}
+        onkeyup={update(id, mk_msg)} onchange={update(id, mk_msg)} />
     counter =
       <div id=#{get_counter_id(id)}></>
     preview =
       <div id=#{get_preview_id(id)}></>
-    submit_msg(_) = submit(get_content(id))
+    submit_msg(_) = get_content(id) |> mk_msg(_) |> submit(_)
     accept = WButton.html(submit_button_cfg, get_submit_button_id(id),
       [({click}, submit_msg)], MSG_SUBMIT)
     <>

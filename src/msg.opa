@@ -5,7 +5,11 @@
 
 package mlstate.twopenny
 
-type Msg.t = private(string)
+type Msg.t = private(
+   { author: User.ref
+   ; content : string
+   ; created_at : Date.date
+   })
 
 type Msg.segment =
     { text : string }
@@ -15,8 +19,9 @@ type Msg.segment =
 
 Msg = {{
 
-  create(s : string) : Msg.t =
-    @wrap(s)
+  create(author : User.ref, content : string) : Msg.t =
+    msg = { ~author ~content created_at=Date.now() }
+    @wrap(msg)
 
   parse(msg : Msg.t) : list(Msg.segment) =
     word = parser
@@ -39,7 +44,7 @@ Msg = {{
     | txt=((!special_prefix (word | .))+) -> // Warning! + not * ; otherwise it will loop
         { text = Text.to_string(txt) }
     msg_parser = parser res=segment_parser* -> res
-    Parser.parse(msg_parser, @unwrap(msg))
+    Parser.parse(msg_parser, @unwrap(msg).content)
 
   render(msg : Msg.t) : xhtml =
      render_segment =

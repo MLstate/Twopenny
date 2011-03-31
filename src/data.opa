@@ -7,8 +7,8 @@ package mlstate.twopenny
 
 Data = {{
 
-  new_message(user, msg) =
-    debug("New message from: '{user}' -> '{msg}'")
+  new_message(msg) =
+    debug("New message: {msg}")
 
   new_user_mention(user, msg) =
     debug("New user mention: '{user}' in '{msg}'")
