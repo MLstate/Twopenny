@@ -1,8 +1,9 @@
 main.opa
 pages.opa
-msg.opa
-msgbox.opa
 data.opa
+msg.opa
+msg_box.opa
+msg_factory.opa
 user.opa
 label.opa
 utils.opa

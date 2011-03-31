@@ -18,7 +18,7 @@ Msg = {{
   create(s : string) : Msg.t =
     @wrap(s)
 
-  @private parse(msg : Msg.t) : list(Msg.segment) =
+  parse(msg : Msg.t) : list(Msg.segment) =
     word = parser
     /* FIXME we probably want to extend the character set
              below. */
@@ -51,17 +51,5 @@ Msg = {{
     | ~{ user } -> User.to_anchor(user)
     content = List.map(render_segment, parse(msg))
     <div class="msg">{content}</>
-
-  submit_msg(user : User.ref)(content : string) =
-    msg = create(content)
-    do Data.new_message(user, msg)
-    index =
-    | ~{user} -> Data.new_user_mention(user, msg)
-    | ~{label} -> Data.new_label_msg(label, msg)
-    | {url=_}
-    | {text=_} -> void
-    do List.iter(index, parse(msg))
-    do exec([#msgs +<- <>{render(msg)}</>])
-    void
 
 }}
