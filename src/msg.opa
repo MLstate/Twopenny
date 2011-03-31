@@ -27,7 +27,7 @@ Msg = {{
     word = parser
     /* FIXME we probably want to extend the character set
              below. */
-    | word=([a-zA-Z0-9_\-]+) -> Text.to_string(word)
+    | word=([a-zA-Z0-9_\-]*) -> Text.to_string(word)
     user_prefix = parser "@" -> void
     label_prefix = parser "#" -> void
     url_prefix = parser "http://" -> void
@@ -41,7 +41,7 @@ Msg = {{
      /* below we eat a complete [word] or a single non-word character; the
         latter case alone may not be enough as we don't want:
         sthhttp://sth to pass for an URL. */
-    | txt=((!special_prefix (word | .))+) -> // Warning! + not * ; otherwise it will loop
+    | txt=((!special_prefix (. word))+) -> // Warning! + not * ; otherwise it will loop
         { text = Text.to_string(txt) }
     msg_parser = parser res=segment_parser* -> res
     Parser.parse(msg_parser, @unwrap(msg).content)
