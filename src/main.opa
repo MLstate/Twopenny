@@ -9,19 +9,23 @@ package mlstate.twopenny
  * {1 Server definition, URL dispatching}
 **/
 
-twopenny_page((title, body))(_conn) =
-  Resource.full_page(title, body,
-    <link rel="icon" type="image/png" href="./img/favicon.png" />,
-    {success}, [])
+twopenny_page((title, body))(_conn_id) =
+  Resource.html(title, body)
+
+resources = @static_include_directory("img")
 
 urls : Parser.general_parser(connexion_id -> resource) =
   parser
-  | "user/" user=(.*) ->
+  | "/favicon." .* -> _conn_id ->
+      @static_resource("./img/favicon.png")
+  | result={Server.resource_map(resources)} -> _conn_id ->
+      result
+  | "/user/" user=(.*) ->
       Text.to_string(user)
       |> User.mk_ref(_)
       |> Pages.user_page(_)
       |> twopenny_page(_)
-  | "label/" label=(.*) ->
+  | "/label/" label=(.*) ->
       Text.to_string(label)
       |> Label.mk_ref(_)
       |> Pages.label_page(_)
@@ -30,9 +34,7 @@ urls : Parser.general_parser(connexion_id -> resource) =
       Pages.main_page()
       |> twopenny_page(_)
 
-resources = @static_include_directory("img")
-
 /**
  * The Twopenny server
  */
-server = Server.make(Resource.add_auto_server(resources, urls))
+server = Server.make(urls)
