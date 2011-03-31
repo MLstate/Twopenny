@@ -17,7 +17,7 @@ Pages = {{
     </>
 
   main_page() =
-    html("Twopenny", unimplemented)
+    ("Twopenny", unimplemented)
 
   @client setup_msg_updates(_) =
     show_new_message(msg) =
@@ -33,9 +33,9 @@ Pages = {{
         {submission}
         <div id=#msgs onready={setup_msg_updates} />
       </>
-    html("Twopenny :: {user}", content)
+    ("Twopenny :: {user}", content)
 
   label_page(label) =
-    html("Twopenny :: {label}", unimplemented)
+    ("Twopenny :: {label}", unimplemented)
 
 }}
