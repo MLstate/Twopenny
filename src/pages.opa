@@ -19,17 +19,20 @@ Pages = {{
   main_page() =
     html("Twopenny", unimplemented)
 
+  @client setup_msg_updates(_) =
+    show_new_message(msg) =
+      exec([#msgs -<- Msg.render(msg)])
+    do MsgFactory.subscribe_to_all(show_new_message)
+    void
+
   user_page(user : User.ref) =
     submission = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
-    show_new_msg(msg) =
-      exec([#msgs +<- Msg.render(msg)])
     content =
       <>
         <h1>User: {@unwrap(user)}</>
         {submission}
-        <div id=#msgs />
+        <div id=#msgs onready={setup_msg_updates} />
       </>
-    do MsgFactory.subscribe_to_all(show_new_msg)
     html("Twopenny :: {user}", content)
 
   label_page(label) =
