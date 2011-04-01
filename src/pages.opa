@@ -21,7 +21,7 @@ Pages = {{
 
   @client setup_msg_updates(_) =
     show_new_message(msg) =
-      exec([#msgs -<- Msg.render(msg)])
+      exec([#msgs -<- Msg.render(msg, {final})])
     do MsgFactory.subscribe_to_all(show_new_message)
     void
 

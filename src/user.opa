@@ -16,4 +16,7 @@ User = {{
     user = @unwrap(user_ref)
     <a href="/user/{user}">@{user}</>
 
+  to_string(user_ref : User.ref) : string =
+    @unwrap(user_ref)
+
 }}

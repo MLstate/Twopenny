@@ -16,4 +16,4 @@ run.debug: main.exe
 	./main.exe --debug-editable-js --js-cleaning no --js-renaming no
 
 clean:
-	rm -rf *.opx *.opx.broken *.exe _tracks
+	rm -rf *.opx *.opx.broken *.exe _tracks _build opa-debug *.log

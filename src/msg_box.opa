@@ -46,7 +46,7 @@ WMsgBox =
     do exec([#{get_counter_id(id)} <- counter_xhtml])
     preview =
       if remaining > 0 then
-        mk_msg(content) |> Msg.render(_)
+        mk_msg(content) |> Msg.render(_, {preview})
       else
         MSG_TOO_LONG_WARNING
     do exec([#{get_preview_id(id)} <- preview])
