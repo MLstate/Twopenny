@@ -57,6 +57,19 @@ WMsgBox =
 
   html(id : string, mk_msg : string -> Msg.t, submit : Msg.t -> void) : xhtml =
     text_id = get_input_text_id(id)
+    apply_css(active : bool) = _ ->
+      style =
+        if active then
+          css {
+            border: 2px solid #C0C000;
+            margin: 0px;
+          }
+        else
+          css {
+            margin: 1px;
+            border: 1px solid #C0CAED;
+          }
+      WStyler.set_dom(~{style}, text_id)
     inputbox =
        /* WARNING! If we change the function call below
           into a closure then we have to be careful with
@@ -64,7 +77,9 @@ WMsgBox =
           up on the server. But there must be a better
           way of doing it than the repetition below... */
       <textarea id=#{text_id} onready={update(id, mk_msg)}
-        onkeyup={update(id, mk_msg)} onchange={update(id, mk_msg)} />
+        onkeyup={update(id, mk_msg)} onchange={update(id, mk_msg)}
+        onblur={apply_css(false)} onfocus={apply_css(true)}
+      />
     counter =
       <div id=#{get_counter_id(id)}></>
     preview =
@@ -84,11 +99,12 @@ WMsgBox =
 msg_box_css = css
   div {} // FIXME
   .msg_box textarea {
-    width: 450px;
-    height: 60px;
-    border: 1px dotted black;
-    border-left: 1px solid transparent;
+    width: 350px;
+    height: 80px;
+    background: #E8EDFF;
+    border-radius: 10px;
     resize: vertical;
-    margin-left: -16px;
+    outline: none;
+    font-size: 14px;
+    font-family: Verdana;
   }
-

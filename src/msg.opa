@@ -86,20 +86,17 @@ Msg = {{
 msg_css = css
   div{} // FIXME, work-around for CSS parsing
   .msg {
-    border: 1px dotted black;
-    border-left: 1px solid transparent;
     width: 540px;
     min-height: 48px;
-    font-size: 15px;
-    font-family: Helvetica;
-    background: #F9FFFF;
-    padding: 15px 0px;
-    margin-left: -16px;
+    font-size: 14px;
+    font-family: Verdana;
+    background: #E8EDFF;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #C0CAED;
   }
   .msg:hover {
-    background: #F5FFFA;
-    border: 1px solid black;
-    border-left: 1px solid transparent;
+    background: #D0DAFD;
   }
   .msg .image {
     width: 48px;
@@ -120,6 +117,6 @@ msg_css = css
     color: #444;
   }
   .msg .date {
-    font-size: 11px;
+    font-size: 12px;
     color: #999;
   }

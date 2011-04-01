@@ -61,3 +61,11 @@ page_css = css
     font-size: 20pt;
     margin: 15px -16px;
   }
+/* marking external links
+  a[rel="external"], a.external {
+    white-space: nowrap;
+    padding-right: 10px;
+    background: url('/img/link.png') no-repeat 100% 50%;
+    zoom: 1;
+  }
+*/
