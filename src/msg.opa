@@ -83,21 +83,23 @@ Msg = {{
   // FIXME WDatePrinter -> "now ago" -> "now"
 }}
 
-css = css
+msg_css = css
+  div{} // FIXME, work-around for CSS parsing
   .msg {
-    border-top: 1px dotted black;
-    border-bottom: 1px dotted black;
+    border: 1px dotted black;
+    border-left: 1px solid transparent;
     width: 540px;
     min-height: 48px;
     font-size: 15px;
     font-family: Helvetica;
-    background: #F0FFF9;
+    background: #F9FFFF;
     padding: 15px 0px;
+    margin-left: -16px;
   }
   .msg:hover {
-    background: #D9FFF6;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    background: #F5FFFA;
+    border: 1px solid black;
+    border-left: 1px solid transparent;
   }
   .msg .image {
     width: 48px;

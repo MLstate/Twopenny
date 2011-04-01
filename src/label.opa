@@ -16,4 +16,7 @@ Label = {{
     label = @unwrap(label_ref)
     <a href="/label/{label}">#{label}</>
 
+  to_string(label: Label.ref) : string =
+    @unwrap(label)
+
 }}

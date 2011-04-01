@@ -9,13 +9,18 @@ package mlstate.twopenny
  * {1 Server definition, URL dispatching}
 **/
 
-twopenny_page((title, body))(_conn_id) =
+twopenny_page((title, content))(_conn_id) =
+  body =
+    <div id=#page>
+      {content}
+    </>
   Resource.html(title, body)
 
 resources = @static_include_directory("img")
 
 urls : Parser.general_parser(connexion_id -> resource) =
   parser
+  | {Rule.debug_parse_string(s -> jlog("URL: {s}"))} Rule.fail -> error("")
   | "/favicon." .* -> _conn_id ->
       @static_resource("./img/favicon.png")
   | result={Server.resource_map(resources)} -> _conn_id ->

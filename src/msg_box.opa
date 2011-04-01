@@ -72,7 +72,7 @@ WMsgBox =
     submit_msg(_) = get_content(id) |> mk_msg(_) |> submit(_)
     accept = WButton.html(submit_button_cfg, get_submit_button_id(id),
       [({click}, submit_msg)], MSG_SUBMIT)
-    <>
+    <div class="msg_box">
       {inputbox}
       {counter}
       {preview}
@@ -80,3 +80,15 @@ WMsgBox =
     </>
 
 }}
+
+msg_box_css = css
+  div {} // FIXME
+  .msg_box textarea {
+    width: 450px;
+    height: 60px;
+    border: 1px dotted black;
+    border-left: 1px solid transparent;
+    resize: vertical;
+    margin-left: -16px;
+  }
+

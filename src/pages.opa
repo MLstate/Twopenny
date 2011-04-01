@@ -29,13 +29,35 @@ Pages = {{
     submission = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
     content =
       <>
-        <h1>User: {@unwrap(user)}</>
+        <div class="header">{User.to_string(user)}</>
         {submission}
         <div id=#msgs onready={setup_msg_updates} />
       </>
-    ("Twopenny :: {user}", content)
+    ("Twopenny :: {User.to_string(user)}", content)
 
   label_page(label) =
-    ("Twopenny :: {label}", unimplemented)
+    ("Twopenny :: {Label.to_string(label)}", unimplemented)
 
 }}
+
+css = [ page_css, msg_css, msg_box_css ]
+
+page_css = css
+  body {
+    margin: 0px;
+  }
+  html {
+    width: 800px;
+    margin: auto;
+    height: 100%;
+    padding: 15px;
+    border-left: 1px dotted black;
+    border-right: 1px dotted black;
+  }
+  .header {
+    border-top: 1px dotted black;
+    border-bottom: 1px dotted black;
+    font-variant: small-caps;
+    font-size: 20pt;
+    margin: 15px -16px;
+  }
