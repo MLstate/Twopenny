@@ -25,17 +25,18 @@ Pages = {{
     do MsgFactory.subscribe_to_all(show_new_message)
     void
 
+  @client setup_newmsg_box(user)(_) =
+    xhtml = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
+    exec([#newmsg <- xhtml])
+
   user_page(user : User.ref) =
-    setup_newmsg_box(_) =
-      xhtml = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
-      exec([#newmsg <- xhtml])
     content =
       <>
         <div class="header">
           {User.show_photo({size_px=80}, user)}
           {User.to_string(user)}
         </>
-        <div id=#newmsg onready={setup_newmsg_box} />
+        <div id=#newmsg onready={setup_newmsg_box(user)} />
         <div id=#msgs onready={setup_msg_updates} />
       </>
     ("Twopenny :: {User.to_string(user)}", content)
