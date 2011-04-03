@@ -19,4 +19,12 @@ User = {{
   to_string(user_ref : User.ref) : string =
     @unwrap(user_ref)
 
+  show_photo(~{size_px}, user_ref : User.ref) : xhtml =
+    size_css = css
+      { max-width: {size_px}px
+      ; max-height: {size_px}px
+      }
+    <img class="image" src="/img/user.png" />
+      |> apply_css(size_css, _)
+
 }}

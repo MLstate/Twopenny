@@ -7,7 +7,7 @@ package mlstate.twopenny
 
 import widgets.{core,button}
 
-WMsgBox =
+@client WMsgBox =
   MAXIMUM_MESSAGE_LENGTH = 140
   REMAINING_MESSAGE_LENGTH = 20
 
@@ -24,14 +24,11 @@ WMsgBox =
 
   submit_button_cfg = WButton.default_config
 
-  apply_css(css_style, dom) =
-    WStyler.add(WStyler.make_style(css_style), dom)
-
   get_content(id) =
     Dom.get_value(#{get_input_text_id(id)})
 {{
 
-  @private @client update(id : string, mk_msg) = _ ->
+  @private update(id : string, mk_msg) = _ ->
     content = get_content(id)
     remaining = MAXIMUM_MESSAGE_LENGTH - String.length(content)
     counter_css =
@@ -55,21 +52,23 @@ WMsgBox =
          enabled)
     void
 
+  @private msgbox_style(text_id : string, active : bool) = _ ->
+    style =
+      if active then
+        css {
+          border: 2px solid #C0C000;
+          margin: 0px;
+        }
+      else
+        css {
+          margin: 1px;
+          border: 1px solid #C0CAED;
+        }
+    WStyler.set_dom(~{style}, text_id)
+
   html(id : string, mk_msg : string -> Msg.t, submit : Msg.t -> void) : xhtml =
+    do debug("called html")
     text_id = get_input_text_id(id)
-    apply_css(active : bool) = _ ->
-      style =
-        if active then
-          css {
-            border: 2px solid #C0C000;
-            margin: 0px;
-          }
-        else
-          css {
-            margin: 1px;
-            border: 1px solid #C0CAED;
-          }
-      WStyler.set_dom(~{style}, text_id)
     inputbox =
        /* WARNING! If we change the function call below
           into a closure then we have to be careful with
@@ -78,7 +77,8 @@ WMsgBox =
           way of doing it than the repetition below... */
       <textarea id=#{text_id} onready={update(id, mk_msg)}
         onkeyup={update(id, mk_msg)} onchange={update(id, mk_msg)}
-        onblur={apply_css(false)} onfocus={apply_css(true)}
+        onblur={msgbox_style(text_id, false)}
+        onfocus={msgbox_style(text_id, true)}
       />
     counter =
       <div id=#{get_counter_id(id)}></>

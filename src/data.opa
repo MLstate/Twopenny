@@ -5,7 +5,7 @@
 
 package mlstate.twopenny
 
-Data = {{
+@both_implem Data = {{
 
   new_message(msg) =
     debug("New message: {msg}")

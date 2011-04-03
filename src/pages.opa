@@ -26,11 +26,16 @@ Pages = {{
     void
 
   user_page(user : User.ref) =
-    submission = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
+    setup_newmsg_box(_) =
+      xhtml = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
+      exec([#newmsg <- xhtml])
     content =
       <>
-        <div class="header">{User.to_string(user)}</>
-        {submission}
+        <div class="header">
+          {User.show_photo({size_px=80}, user)}
+          {User.to_string(user)}
+        </>
+        <div id=#newmsg onready={setup_newmsg_box} />
         <div id=#msgs onready={setup_msg_updates} />
       </>
     ("Twopenny :: {User.to_string(user)}", content)
@@ -54,12 +59,18 @@ page_css = css
     border-left: 1px dotted black;
     border-right: 1px dotted black;
   }
+  .header .image {
+    margin: -15px 0px;
+  }
   .header {
     border-top: 1px dotted black;
     border-bottom: 1px dotted black;
     font-variant: small-caps;
     font-size: 20pt;
-    margin: 15px -16px;
+    height: 50px;
+    margin: 30px -16px;
+    background: #F8F8F8;
+    padding: 0px 15px;
   }
 /* marking external links
   a[rel="external"], a.external {

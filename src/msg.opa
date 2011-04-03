@@ -19,7 +19,7 @@ type Msg.segment =
   / { url : Uri.uri }
   / { user : User.ref }
 
-Msg = {{
+@both_implem Msg = {{
 
   create(author : User.ref, content : string) : Msg.t =
     msg = { ~author ~content created_at=Date.now() }
@@ -68,10 +68,11 @@ Msg = {{
     content = List.map(render_segment, parse(msg))
     date = WDatePrinter.html(WDatePrinter.default_config,
       uniq(), Msg.get_creation_date(msg))
+    author = Msg.get_author(msg)
     <div class="msg">
-      <img class="image" src="/img/user.png" />
+      {User.show_photo({size_px=48}, author)}
       <div class="content">
-        <div class="user">{Msg.get_author(msg) |> User.to_anchor}</>
+        <div class="user">{User.to_anchor(author)}</>
         <div class="text">{content}</>
         {match mode with
         | {final} -> <div class="date">{date}</>
