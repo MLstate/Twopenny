@@ -57,7 +57,7 @@ type Msg.segment =
     msg_parser = parser res=segment_parser* -> res
     Parser.parse(msg_parser, Msg.get_content(msg))
 
-  render(msg : Msg.t, mode : {preview} / {final}) : xhtml =
+  render(msg : Msg.t, mode : {preview} / {final} / {new}) : xhtml =
     render_segment =
     | ~{ text } -> <>{text}</>
     | ~{ url } ->
@@ -69,13 +69,23 @@ type Msg.segment =
     date = WDatePrinter.html(WDatePrinter.default_config,
       uniq(), Msg.get_creation_date(msg))
     author = Msg.get_author(msg)
-    <div class="msg">
+    id = uniq()
+    classes = ["msg" | if mode == {new} then ["hidden"] else []]
+    ready(_) = match mode with
+             | {new} ->
+                 _ = Dom.Effect.fade_in()
+                  |> Dom.Effect.with_duration({millisec=1500}, _)
+                  |> Dom.transition(#{id}, _)
+                 void
+             | _ -> void
+    <div id={id} class={classes} onready={ready}>
       {User.show_photo({size_px=48}, author)}
       <div class="content">
         <div class="user">{User.to_anchor(author)}</>
         <div class="text">{content}</>
         {match mode with
-        | {final} -> <div class="date">{date}</>
+        | {final}
+        | {new} -> <div class="date">{date}</>
         | {preview} -> <></> // don't display date in preview
         }
       </>
@@ -95,6 +105,10 @@ msg_css = css
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #C0CAED;
+    margin-bottom: 10px;
+  }
+  .msg.new {
+    background: #FF0000;
   }
   .msg:hover {
     background: #D0DAFD;

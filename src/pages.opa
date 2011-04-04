@@ -20,7 +20,7 @@ Pages = {{
     ("Twopenny", unimplemented)
 
   @client show_new_message(~{newmsg}) =
-    exec([#msgs -<- Msg.render(newmsg, {final})])
+    exec([#msgs -<- Msg.render(newmsg, {new})])
 
   @client setup_msg_updates(_) =
     chan = Session.make_callback(show_new_message)
@@ -62,6 +62,9 @@ page_css = css
     padding: 15px;
     border-left: 1px dotted black;
     border-right: 1px dotted black;
+  }
+  .hidden {
+    display: none;
   }
   .header .image {
     margin: -15px 0px;
