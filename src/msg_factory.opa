@@ -8,27 +8,26 @@ package mlstate.twopenny
 /**
  * @private
 **/
-type MsgFactory.msg_subscription = channel(
+type MsgFactory.msg_listener = channel(
   { newmsg : Msg.t }
 )
 
 MsgFactory = {{
 
-  @private on_subscription(callbacks, msg) =
+  @private on_subscription(listeners, msg) =
     match msg with
-    | { SubscribeToAll=callback } ->
-      {set = [callback | callbacks]}
+    | { NewListener=listener } ->
+      {set = [listener | listeners]}
     | { NewMessage=newmsg } ->
-       /* REMARK Type annotation below needed to avoid value
-          restriction error */
-      notify(callback) = callback(newmsg : Msg.t)
-      do List.iter(notify, callbacks)
+      do Debug.jlog("Notifying {List.length(listeners)} clients about a new message")
+      notify(listener) = Session.send(listener, ~{newmsg})
+      do List.iter(notify, listeners)
       {unchanged}
 
   @private @server subscribers =
-    Session.make([], on_subscription)
+    Session.make([] : list(MsgFactory.msg_listener), on_subscription)
 
-  submit(msg : Msg.t) =
+  @server submit(msg : Msg.t) =
     do Data.new_message(msg)
     index =
     | ~{user} -> Data.new_user_mention(user, msg)
@@ -39,8 +38,9 @@ MsgFactory = {{
     do Session.send(subscribers, {NewMessage=msg})
     void
 
-  subscribe_to_all(callback : Msg.t -> void) : void =
-    do Session.send(subscribers, {SubscribeToAll=callback})
+  subscribe_to_all(listener : MsgFactory.msg_listener) : void =
+    do Debug.jlog("sb. is subscribing to all new msgs.")
+    do Session.send(subscribers, {NewListener=listener})
     void
 
 }}

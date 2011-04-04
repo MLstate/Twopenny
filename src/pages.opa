@@ -19,10 +19,13 @@ Pages = {{
   main_page() =
     ("Twopenny", unimplemented)
 
+  @client show_new_message(~{newmsg}) =
+    exec([#msgs -<- Msg.render(newmsg, {final})])
+
   @client setup_msg_updates(_) =
-    show_new_message(msg) =
-      exec([#msgs -<- Msg.render(msg, {final})])
-    do MsgFactory.subscribe_to_all(show_new_message)
+    chan = Session.make_callback(show_new_message)
+    do MsgFactory.subscribe_to_all(chan)
+    do debug("subscribing to new messages")
     void
 
   @client setup_newmsg_box(user)(_) =
