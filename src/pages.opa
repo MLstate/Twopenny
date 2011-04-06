@@ -40,6 +40,7 @@ Pages = {{
           {User.to_string(user)}
         </>
         <div id=#newmsg onready={setup_newmsg_box(user)} />
+        <div class="separator" />
         <div id=#msgs onready={setup_msg_updates} />
       </>
     ("Twopenny :: {User.to_string(user)}", content)
@@ -63,6 +64,15 @@ page_css = css
     border-left: 1px dotted black;
     border-right: 1px dotted black;
   }
+  h2 {
+    color: #777;
+     /* FIXME writing helvetica passes syntax checking and is interpreted
+              as un-typed CSS, so goes verbose to the page as font:helvetica;
+              Not cool! */
+    font-family: Helvetica;
+    font-size: 20px;
+    margin: 0px 0px 5px 0px;
+  }
   .hidden {
     display: none;
   }
@@ -78,6 +88,10 @@ page_css = css
     margin: 30px -16px;
     background: #F8F8F8;
     padding: 0px 15px;
+  }
+  div.separator {
+    margin: 30px -15px;
+    border-top: 1px dotted black;
   }
 /* marking external links
   a[rel="external"], a.external {

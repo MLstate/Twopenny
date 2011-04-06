@@ -89,6 +89,11 @@ type Msg.segment =
         | {preview} -> <></> // don't display date in preview
         }
       </>
+      {match mode with
+      | {preview} -> <span class="preview">Preview</>
+      | {final}
+      | {new} -> <></>
+      }
     </>
 
   // FIXME WDatePrinter -> "now ago" -> "now"
@@ -97,6 +102,7 @@ type Msg.segment =
 msg_css = css
   div{} // FIXME, work-around for CSS parsing
   .msg {
+    position: relative;
     width: 540px;
     min-height: 48px;
     font-size: 14px;
@@ -134,4 +140,14 @@ msg_css = css
   .msg .date {
     font-size: 12px;
     color: #999;
+  }
+  .msg .preview {
+    position: absolute;
+    top: -13px;
+    right: -27px;
+    border: 1px solid #C0CAED;
+    background-color: #D0DAFD;
+    padding: 3px;
+    border-radius: 5px;
+    font-variant: small-caps;
   }
