@@ -13,6 +13,10 @@ type Msg.t = private(
    ; created_at : Date.date
    })
 
+type Msg.ref = private(int)
+
+type Msg.map('a) = ordered_map(Msg.ref, 'a, Int.order)
+
 type Msg.segment =
     { text : string }
   / { label : Label.ref }

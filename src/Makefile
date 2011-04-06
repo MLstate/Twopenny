@@ -13,7 +13,7 @@ run: main.exe
 	./main.exe
 
 run.debug: main.exe
-	./main.exe --debug-editable-js --js-cleaning no --js-renaming no
+	./main.exe --db-force-upgrade --debug-editable-js --js-cleaning no --js-renaming no
 
 clean:
 	rm -rf *.opx *.opx.broken *.exe _tracks _build opa-debug *.log

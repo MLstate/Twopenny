@@ -39,7 +39,6 @@ MsgFactory = {{
     void
 
   subscribe_to_all(listener : MsgFactory.msg_listener) : void =
-    do Debug.jlog("sb. is subscribing to all new msgs.")
     do Session.send(subscribers, {NewListener=listener})
     void
 

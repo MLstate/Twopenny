@@ -5,6 +5,22 @@
 
 package mlstate.twopenny
 
+/** Users in the system **/
+db /users : stringmap(User.t)
+db /users[_]/photo full
+
+/** Messages posted by users **/
+ // msg_ref -> msg
+db /msgs : Msg.map(Msg.t)
+
+/** Messages posted by users **/
+ // user -> date -> msg_ref
+db /user_msg : User.map(Date.map(Msg.ref))
+
+/** References to messages mentioning given users **/
+ // user -> date -> msg_ref
+db /user_mentions : User.map(Date.map(Msg.ref))
+
 @both_implem Data = {{
 
   new_message(msg) =
