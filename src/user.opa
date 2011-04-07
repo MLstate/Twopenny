@@ -5,14 +5,11 @@
 
 package mlstate.twopenny
 
-type User.photo =
-  { small : image
-  ; full : image
-  }
-
 type User.t =
     /** Name of the user (this is not the login) **/
   { name : string
+    /** User's location **/
+  ; location : string
     /** A short self-presentation of the user **/
   ; motto : string
    /* FIXME actually I want [Url.url] not [string] below but I don't know
@@ -26,8 +23,10 @@ type User.t =
   ; email : Email.email
     /** User's password (actually an MD5 hash of the password) **/
   ; passwd : string
-    /** User's photo **/
-  ; photo : option(User.photo)
+    /** User's profile photo **/
+  ; photo : option(image)
+    /** User's wallpaper **/
+  ; wallpaper : option(image)
   }
 
 type User.ref = private(string)

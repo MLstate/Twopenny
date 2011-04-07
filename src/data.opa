@@ -8,6 +8,7 @@ package mlstate.twopenny
 /** Users in the system **/
 db /users : stringmap(User.t)
 db /users[_]/photo full
+db /users[_]/wallpaper full
 
 /** Messages posted by users **/
  // msg_ref -> msg
@@ -34,3 +35,22 @@ db /user_mentions : User.map(Date.map(Msg.ref))
 
 
 }}
+
+init_data_store() =
+  match ?/users["mlstate"] with
+  | {none} ->
+      mlstate : User.t =
+        { name       = "OPA by MLstate"
+        ; location   = "Paris, France"
+        ; motto      = "MLstate, creators of the OPA platform for web-development"
+        ; email      = Email.of_string("contact@mlstate.com")
+        ; url        = "http://mlstate.com"
+        ; photo      = some({png = @static_binary_content("img/mlstate.png")})
+        ; passwd     = ""
+        ; wallpaper  = some({png = @static_binary_content("img/mlstate-bg.png")})
+        }
+      /users["mlstate"] <- mlstate
+  | _ ->
+    void
+
+_ = init_data_store()
