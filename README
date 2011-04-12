@@ -1,9 +1,10 @@
-----------------------------------------------------------------------------------
+----------------------------------------------------------
 
- Twopenny: an open-source project of a Twitter-like application developed in OPA.
+  Twopenny: an open-source project for a micro-blogging
+  application developed in OPA.
 
  @Author(s): Adam.Koprowski@mlstate.com
  @Licence:   AGPL
  @Copyright: (c) MLstate - 2011
 
-----------------------------------------------------------------------------------
+----------------------------------------------------------
