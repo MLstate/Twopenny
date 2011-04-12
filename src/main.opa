@@ -25,6 +25,10 @@ urls : Parser.general_parser(connexion_id -> resource) =
       @static_resource("./img/favicon.png")
   | result={Server.resource_map(resources)} -> _conn_id ->
       result
+  | "/img/user-photo/" user=(.*) -> _conn_id ->
+      Text.to_string(user)
+      |> User.mk_ref(_)
+      |> User.get_user_photo_resource(_)
   | "/user/" user=(.*) ->
       Text.to_string(user)
       |> User.mk_ref(_)

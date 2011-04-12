@@ -23,7 +23,7 @@ type Msg.segment =
   / { url : Uri.uri }
   / { user : User.ref }
 
-@both_implem Msg = {{
+Msg = {{
 
   create(author : User.ref, content : string) : Msg.t =
     msg = { ~author ~content created_at=Date.now() }
@@ -68,7 +68,7 @@ type Msg.segment =
        // we add spaces around URLs to avoid collapsing them together with adjacent text
       <> <a href={url}>{Uri.to_string(url)}</> </>
     | ~{ label } -> Label.to_anchor(label)
-    | ~{ user } -> User.to_anchor(user)
+    | ~{ user } -> User.ref_to_anchor(user)
     content = List.map(render_segment, parse(msg))
     date = WDatePrinter.html(WDatePrinter.default_config,
       uniq(), Msg.get_creation_date(msg))
@@ -83,9 +83,9 @@ type Msg.segment =
                  void
              | _ -> void
     <div id={id} class={classes} onready={ready}>
-      {User.show_photo({size_px=48}, author)}
+      {User.show_msg_photo(author)}
       <div class="content">
-        <div class="user">{User.to_anchor(author)}</>
+        <div class="user">{User.ref_to_anchor(author)}</>
         <div class="text">{content}</>
         {match mode with
         | {final}

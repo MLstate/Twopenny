@@ -32,25 +32,29 @@ Pages = {{
     xhtml = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
     exec([#newmsg <- xhtml])
 
-  user_page(user : User.ref) =
+  user_page(user_ref : User.ref) =
+    user_string = User.ref_to_string(user_ref)
     content =
-      <>
-        <div class="header">
-          {User.show_photo({size_px=80}, user)}
-          {User.to_string(user)}
-        </>
-        <div id=#newmsg onready={setup_newmsg_box(user)} />
-        <div class="separator" />
-        <div id=#msgs onready={setup_msg_updates} />
-      </>
-    ("Twopenny :: {User.to_string(user)}", content)
+      match User.get(user_ref) with
+      | {none} ->
+          <div class="error_page">
+            Sorry, but I know of no user <strong>{user_string}</>
+          </>
+      | {some=user} ->
+          <>
+            {User.get_header(user_ref, user)}
+            <div id=#newmsg onready={setup_newmsg_box(user_ref)} />
+            <div class="separator" />
+            <div id=#msgs onready={setup_msg_updates} />
+          </>
+    ("Twopenny :: {user_string}", content)
 
   label_page(label) =
     ("Twopenny :: {Label.to_string(label)}", unimplemented)
 
 }}
 
-css = [ page_css, msg_css, msg_box_css ]
+css = [ page_css, msg_css, msg_box_css, user_css ]
 
 page_css = css
   body {
@@ -75,19 +79,6 @@ page_css = css
   }
   .hidden {
     display: none;
-  }
-  .header .image {
-    margin: -15px 0px;
-  }
-  .header {
-    border-top: 1px dotted black;
-    border-bottom: 1px dotted black;
-    font-variant: small-caps;
-    font-size: 20pt;
-    height: 50px;
-    margin: 30px -16px;
-    background: #F8F8F8;
-    padding: 0px 15px;
   }
   div.separator {
     margin: 30px -15px;
