@@ -2,7 +2,10 @@ all: main.exe
 
 OPA_COMP = opa
 OPA_ARGS =
+OPADOC = opadoc
+
 OPA = $(OPA_COMP) $(OPA_ARGS)
+OPADOCAPI = $(OPA_COMP) --api-only
 
 PACK = src/twopenny.opack
 
@@ -17,11 +20,10 @@ run: main.exe
 run.debug: main.exe
 	./main.exe --db-force-upgrade --debug-editable-js --js-cleaning no --js-renaming no
 
-doc: main.exe
+doc: $(SRC) clean
 	$(OPADOCAPI) $(SRC)
-	@mv *.api* src
 	$(OPADOC) src
-	@firefox doc/index.html
+	@firefox doc/index.html &
 
 clean:
-	rm -rf *.opx *.opx.broken *.exe _tracks _build opa-debug *.log
+	rm -rf *.opx *.opx.broken *.exe _tracks _build opa-debug *.log src/*.api*
