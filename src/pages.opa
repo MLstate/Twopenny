@@ -16,8 +16,10 @@ Pages = {{
       Coming soon... stay tuned
     </>
 
+  empty_style = []
+
   main_page() =
-    ("Twopenny", unimplemented)
+    ("Twopenny", unimplemented, empty_style)
 
   @client show_new_message(~{newmsg}) =
     exec([#msgs -<- Msg.render(newmsg, {new})])
@@ -47,30 +49,37 @@ Pages = {{
             <div class="separator" />
             <div id=#msgs onready={setup_msg_updates} />
           </>
-    ("Twopenny :: {user_string}", content)
+    style = User.get_wallpaper_css(user_ref)
+    ("Twopenny :: {user_string}", content, style)
 
   label_page(label) =
-    ("Twopenny :: {Label.to_string(label)}", unimplemented)
+    ("Twopenny :: {Label.to_string(label)}", unimplemented, empty_style)
 
 }}
 
 css = [ page_css, msg_css, msg_box_css, user_css ]
 
 page_css = css
+  body, html, #page {
+    width: 100%;
+    height: 100%;
+  }
   body {
     margin: 0px;
   }
-  html {
+  #main {
     width: 800px;
     margin: auto;
     height: 100%;
     padding: 15px;
     border-left: 1px dotted black;
     border-right: 1px dotted black;
+    background: #EEE;
+    opacity: .7;
   }
   h2 {
     color: #777;
-     /* FIXME writing helvetica passes syntax checking and is interpreted
+     /* FIXME writing helvetica (small 'h') passes syntax checking and is interpreted
               as un-typed CSS, so goes verbose to the page as font:helvetica;
               Not cool! */
     font-family: Helvetica;

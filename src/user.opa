@@ -5,6 +5,12 @@
 
 package mlstate.twopenny
 
+type User.wallpaper =
+  { img : option(image)
+  ; tile : bool
+  ; color : option(color)
+  }
+
 type User.t =
     /** Name of the user (this is not the login) **/
   { name : string
@@ -26,7 +32,7 @@ type User.t =
     /** User's profile photo **/
   ; photo : option(image)
     /** User's wallpaper **/
-  ; wallpaper : option(image)
+  ; wallpaper : User.wallpaper
   }
 
 type User.ref = private(string)
@@ -35,9 +41,17 @@ type User.map('a) = ordered_map(User.ref, 'a, String.order)
 
 User =
 
-  default_user_photo : resource =
-    img = {png = @static_binary_content("img/user.png")}
-    Resource.image(img)
+  default_user_photo : image =
+    {png = @static_binary_content("img/user.png")}
+
+  default_user_wallpaper_img : image =
+    {png = @static_binary_content("img/default_bg.png")}
+
+  default_user_wallpaper : User.wallpaper =
+    { img = some(default_user_wallpaper_img)
+    ; tile = false
+    ; color = some(Color.white)
+    }
 
   max_profile_photo_size =
     { max_height_px = 80 max_width_px = 80 }
@@ -56,13 +70,21 @@ User =
   get(user_ref : User.ref) : option(User.t) =
     ?/users[@unwrap(user_ref)]
 
+  @private get_user_optional_image(user_ref, get_photo, default_photo) =
+    img =
+      match get(user_ref) with
+      | {none} -> default_photo
+      | ~{some=user} ->
+         match get_photo(user) with
+         | {some=photo} -> photo
+         | {none} -> default_photo
+    Resource.image(img)
+
   get_user_photo_resource(user_ref : User.ref) : resource =
-    match get(user_ref) with
-    | {none} -> default_user_photo
-    | ~{some=user} ->
-       match user.photo with
-       | {some=photo} -> Resource.image(photo)
-       | {none} -> default_user_photo
+    get_user_optional_image(user_ref, (user -> user.photo), default_user_photo)
+
+  get_user_wallpaper_resource(user_ref : User.ref) : resource =
+    get_user_optional_image(user_ref, (user -> user.wallpaper.img), default_user_wallpaper_img)
 
   ref_to_anchor(user_ref : User.ref) : xhtml =
     user = @unwrap(user_ref)
@@ -80,6 +102,18 @@ User =
       {show_photo(max_profile_photo_size, get_user_photo_url(user_ref))}
       {User.ref_to_string(user_ref)}
     </>
+
+  get_wallpaper_css(user_ref : User.ref) : css_properties =
+    wallpaper = Option.map((user -> user.wallpaper), get(user_ref)) ? default_user_wallpaper
+    user_bg =
+      { Css_build.no_background with
+          url = some(Url.make("/img/user-bg/{user_ref}"))
+          repeat = if wallpaper.tile then none else some({css_none})
+          color = wallpaper.color
+      }
+    css {
+      background: {user_bg}
+    }
 
 }}
 

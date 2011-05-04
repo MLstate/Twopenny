@@ -9,11 +9,14 @@ package mlstate.twopenny
  * {1 Server definition, URL dispatching}
 **/
 
-twopenny_page((title, content))(_req) =
+twopenny_page((title, content, style))(_req) =
   body =
     <div id=#page>
-      {content}
+      <div id=#main>
+        {content}
+      </>
     </>
+    |> apply_css(style, _)
   Resource.html(title, body)
 
 resources = @static_include_directory("img")
@@ -29,6 +32,10 @@ urls : Parser.general_parser(http_request -> resource) =
       Text.to_string(user)
       |> User.mk_ref(_)
       |> User.get_user_photo_resource(_)
+  | "/img/user-bg/" user=(.*) -> _req ->
+      Text.to_string(user)
+      |> User.mk_ref(_)
+      |> User.get_user_wallpaper_resource(_)
   | "/user/" user=(.*) ->
       Text.to_string(user)
       |> User.mk_ref(_)

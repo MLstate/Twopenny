@@ -26,4 +26,4 @@ doc: $(SRC) clean
 	@firefox doc/index.html &
 
 clean:
-	rm -rf *.opx *.opx.broken *.exe _tracks _build opa-debug *.log src/*.api*
+	rm -rf *.opx *.opx.broken *.exe _tracks _build opa-debug *.log src/*.api* opadoc.apix

@@ -5,20 +5,20 @@
 
 package mlstate.twopenny
 
-/** Users in the system **/
+/** Users in the system */
 db /users : stringmap(User.t)
 db /users[_]/photo full
 db /users[_]/wallpaper full
 
-/** Messages posted by users **/
+/** Messages posted by the users */
  // msg_ref -> msg
 db /msgs : Msg.map(Msg.t)
 
-/** Messages posted by users **/
+/** Messages posted by users */
  // user -> date -> msg_ref
 db /user_msg : User.map(Date.map(Msg.ref))
 
-/** References to messages mentioning given users **/
+/** References to messages mentioning given users */
  // user -> date -> msg_ref
 db /user_mentions : User.map(Date.map(Msg.ref))
 
@@ -47,7 +47,11 @@ init_data_store() =
         ; url        = "http://mlstate.com"
         ; photo      = some({png = @static_binary_content("img/mlstate.png")})
         ; passwd     = ""
-        ; wallpaper  = some({png = @static_binary_content("img/mlstate-bg.png")})
+        ; wallpaper  =
+            { img = some({png = @static_binary_content("img/mlstate-bg.png")})
+            ; tile = false
+            ; color = Color.of_string("#155B9C")
+            }
         }
       /users["mlstate"] <- mlstate
   | _ ->
