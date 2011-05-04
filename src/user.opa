@@ -43,7 +43,7 @@ User =
     { max_height_px = 80 max_width_px = 80 }
 
   max_thumb_photo_size =
-    { max_height_px = 40 max_width_px = 40 }
+    { max_height_px = 50 max_width_px = 50 }
 
   get_user_photo_url(user_ref : User.ref) : string =
     "/img/user-photo/{@unwrap(user_ref)}"

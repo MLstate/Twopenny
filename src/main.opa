@@ -9,7 +9,7 @@ package mlstate.twopenny
  * {1 Server definition, URL dispatching}
 **/
 
-twopenny_page((title, content))(_conn_id) =
+twopenny_page((title, content))(_req) =
   body =
     <div id=#page>
       {content}
@@ -18,14 +18,14 @@ twopenny_page((title, content))(_conn_id) =
 
 resources = @static_include_directory("img")
 
-urls : Parser.general_parser(connexion_id -> resource) =
+urls : Parser.general_parser(http_request -> resource) =
   parser
   | {Rule.debug_parse_string(s -> jlog("URL: {s}"))} Rule.fail -> error("")
-  | "/favicon." .* -> _conn_id ->
+  | "/favicon." .* -> _req ->
       @static_resource("./img/favicon.png")
-  | result={Server.resource_map(resources)} -> _conn_id ->
+  | result={Server.resource_map(resources)} -> _req ->
       result
-  | "/img/user-photo/" user=(.*) -> _conn_id ->
+  | "/img/user-photo/" user=(.*) -> _req ->
       Text.to_string(user)
       |> User.mk_ref(_)
       |> User.get_user_photo_resource(_)
