@@ -8,22 +8,13 @@ package mlstate.twopenny
 import widgets.loginbox
 import components.login
 
-type Login.credentials =
-  { login : string
-  ; passwd : string
-  }
+type Login.credentials = option((string, string))
 
-type Login.private_state =
-  { user : option(User.ref)
-  }
+type Login.state = option(User.ref)
 
-type Login.public_state = Login.private_state
+type Login.config = CLogin.config(Login.credentials, Login.state, Login.state)
 
-type Login.config = CLogin.config(Login.credentials, Login.private_state,
-                      Login.public_state)
-
-type Login.component = CLogin.t(Login.credentials, Login.private_state,
-                         Login.public_state)
+type Login.component = CLogin.t(Login.credentials, Login.state, Login.state)
 
 Login =
 
@@ -31,41 +22,32 @@ Login =
 
 {{
 
-  @publish @server authenticate(cred : Login.credentials, state : Login.private_state)
-    : option(Login.private_state) =
-    do Log.debug("[LOGIN]", "authentication: [login:{cred.login}, passwd:{cred.passwd}]")
-    user_ref = User.mk_ref(cred.login)
-    match User.get(user_ref) with
-    | {none} -> none
-    | {some=user} ->
-        passwd = User.mk_passwd(cred.passwd)
-        if passwd == user.passwd then
-          some({user = some(user_ref)})
-        else
-          none
+  @private guest_state : Login.state =
+    none
 
-  @private loginbox(onchange : Login.credentials -> void, state : Login.public_state)
-    : xhtml =
-    login_action(login, passwd) = onchange(~{login passwd})
-    user_opt = Option.map((user_ref -> <>{User.ref_to_string(user_ref)}</>), state.user)
-    WLoginbox.html(WLoginbox.default_config, dom_id, login_action, user_opt)
+  @publish @server authenticate(cred : Login.credentials, state : Login.state)
+    : option(Login.state) =
+    do Log.debug("[LOGIN]", "authentication: [{cred}]")
+    match cred with
+    | {none} -> none
+    | {some=(login, passwd)} ->
+        user_ref = User.mk_ref(login)
+        match User.get(user_ref) with
+        | {none} -> none
+        | {some=user} ->
+           passwd = User.mk_passwd(passwd)
+           if passwd == user.passwd then
+             some(some(user_ref))
+           else
+             none
 
   @private login_conf : Login.config =
-    { ~authenticate
-    ; get_credential(state : Login.private_state) : Login.public_state  = state
-    ; ~loginbox
-    ; on_change(_, _) = void
-    ; dbpath = none
-    ; prelude = none
-    }
+    CLogin.default_config(dom_id, authenticate)
 
-  @private default_state : Login.private_state =
-    { user = none }
+  login : Login.component =
+    CLogin.make(guest_state, login_conf)
 
-  init() : Login.component =
-    CLogin.make(default_state, login_conf)
-
-  html(component : Login.component) : xhtml =
-    CLogin.html(component)
+  html() : xhtml =
+    CLogin.html(login)
 
 }}

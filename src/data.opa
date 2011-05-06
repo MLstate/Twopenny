@@ -46,7 +46,7 @@ init_data_store() =
         ; email      = Email.of_string("contact@mlstate.com")
         ; url        = "http://mlstate.com"
         ; photo      = some({png = @static_binary_content("img/mlstate.png")})
-        ; passwd     = ""
+        ; passwd     = "9d62e4f6d08f780e5d5e4f30ca3419d6"
         ; wallpaper  =
             { img = some({png = @static_binary_content("img/mlstate-bg.png")})
             ; tile = false
@@ -57,4 +57,4 @@ init_data_store() =
   | _ ->
     void
 
-_ = init_data_store()
+@server _ = init_data_store()

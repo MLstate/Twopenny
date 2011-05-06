@@ -13,7 +13,7 @@ twopenny_page((title, content, style))(_req) =
   status =
     <div id=#status>
       <div id=#loginbox>
-        {Login.html(Login.init())}
+        {Login.html()}
       </div>
     </>
   page =
