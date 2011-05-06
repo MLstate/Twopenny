@@ -67,15 +67,33 @@ page_css = css
   body {
     margin: 0px;
   }
+  #status {
+    position: fixed;
+    top: 0px;
+    overflow: hidden;
+    width: 70%;
+    height: 30px;
+    margin: 0 15%;
+    z-index: 9999;
+    border: 1px dotted black;
+    border-top: none;
+    background: #666;
+  }
+  #page {
+    padding-top: 30px;
+  }
   #main {
     width: 800px;
     margin: auto;
-    height: 100%;
+    min-height: 500px;
     padding: 15px;
     border-left: 1px dotted black;
     border-right: 1px dotted black;
     background: #EEE;
-    opacity: .7;
+    opacity: .8;
+  }
+  #loginbox {
+    float: right;
   }
   h2 {
     color: #777;

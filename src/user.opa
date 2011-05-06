@@ -11,6 +11,8 @@ type User.wallpaper =
   ; color : option(color)
   }
 
+@abstract type passwd = string
+
 type User.t =
     /** Name of the user (this is not the login) **/
   { name : string
@@ -28,7 +30,7 @@ type User.t =
     /** User's email **/
   ; email : Email.email
     /** User's password (actually an MD5 hash of the password) **/
-  ; passwd : string
+  ; passwd : passwd
     /** User's profile photo **/
   ; photo : option(image)
     /** User's wallpaper **/
@@ -50,7 +52,7 @@ User =
   default_user_wallpaper : User.wallpaper =
     { img = some(default_user_wallpaper_img)
     ; tile = false
-    ; color = some(Color.white)
+    ; color = Color.of_string("#155B9C")
     }
 
   max_profile_photo_size =
@@ -110,10 +112,14 @@ User =
           url = some(Url.make("/img/user-bg/{user_ref}"))
           repeat = if wallpaper.tile then none else some({css_none})
           color = wallpaper.color
+          attached = some(void)
       }
     css {
       background: {user_bg}
     }
+
+  mk_passwd(pass : string) : passwd =
+    md5(pass)
 
 }}
 
