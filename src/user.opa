@@ -111,6 +111,7 @@ User =
       { Css_build.no_background with
           url = some(Url.make("/img/user-bg/{user_ref}"))
           repeat = if wallpaper.tile then none else some({css_none})
+          position = some({x = {left}; y = {size = {px = 30}}})
           color = wallpaper.color
           attached = some(void)
       }

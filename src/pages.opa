@@ -66,14 +66,14 @@ page_css = css
   }
   body {
     margin: 0px;
+    position: relative;
   }
   #status {
     position: fixed;
     top: 0px;
     overflow: hidden;
-    width: 70%;
+    width: 100%;
     height: 30px;
-    margin: 0 15%;
     z-index: 9999;
     border: 1px dotted black;
     border-top: none;
@@ -85,7 +85,7 @@ page_css = css
   #main {
     width: 800px;
     margin: auto;
-    min-height: 500px;
+    min-height: 700px;
     padding: 15px;
     border-left: 1px dotted black;
     border-right: 1px dotted black;
