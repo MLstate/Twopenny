@@ -57,7 +57,7 @@ Pages = {{
 
 }}
 
-css = [ page_css, msg_css, msg_box_css, user_css ]
+css = [ page_css, login_css, msg_css, msg_box_css, user_css ]
 
 page_css = css
   body, html, #page {
@@ -68,7 +68,7 @@ page_css = css
     margin: 0px;
     position: relative;
   }
-  #status {
+  #status_container {
     position: fixed;
     top: 0px;
     overflow: hidden;
@@ -78,6 +78,10 @@ page_css = css
     border: 1px dotted black;
     border-top: none;
     background: #666;
+  }
+  #status {
+    width: 600px;
+    margin: auto;
   }
   #page {
     padding-top: 30px;

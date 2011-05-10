@@ -11,10 +11,12 @@ package mlstate.twopenny
 
 twopenny_page((title, content, style))(_req) =
   status =
-    <div id=#status>
-      <div id=#loginbox>
-        {Login.html()}
-      </div>
+    <div id=#status_container>
+      <div id=#status>
+        <div id=#loginbox>
+          {Login.html()}
+        </>
+      </>
     </>
   page =
     <div id=#page>

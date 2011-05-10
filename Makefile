@@ -13,6 +13,7 @@ SRC = $(addprefix src/, $(shell cat $(PACK)))
 
 main.exe: $(PACK) $(SRC)
 	$(OPA) $< -o $@
+	notify-send -t 5000 "$@ compilation finished" &> /dev/null & beep &> /dev/null
 
 run: main.exe
 	./main.exe
