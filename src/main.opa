@@ -10,14 +10,7 @@ package mlstate.twopenny
 **/
 
 twopenny_page((title, content, style))(_req) =
-  status =
-    <div id=#status_container>
-      <div id=#status>
-        <div id=#loginbox>
-          {Login.html()}
-        </>
-      </>
-    </>
+  toolbar = Toolbar.html()
   page =
     <div id=#page>
       <div id=#main>
@@ -25,7 +18,7 @@ twopenny_page((title, content, style))(_req) =
       </>
     </>
     |> apply_css(style, _)
-  body = <>{status}{page}</>
+  body = <>{toolbar}{page}</>
   Resource.html(title, body)
 
 resources = @static_include_directory("img")

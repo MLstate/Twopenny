@@ -8,15 +8,15 @@ package mlstate.twopenny
 import widgets.{loginbox, switch}
 import components.login
 
+type Toolbar.state = option(User.ref)
+
 type Login.credentials = option((string, string))
 
-type Login.state = option(User.ref)
+type Login.config = CLogin.config(Login.credentials, Toolbar.state, Toolbar.state)
 
-type Login.config = CLogin.config(Login.credentials, Login.state, Login.state)
+type Login.component = CLogin.t(Login.credentials, Toolbar.state, Toolbar.state)
 
-type Login.component = CLogin.t(Login.credentials, Login.state, Login.state)
-
-Login =
+Toolbar =
 
    dom_id = "login"
 
@@ -25,11 +25,11 @@ Login =
 
 {{
 
-  @private guest_state : Login.state =
+  @private guest_state : Toolbar.state =
     none
 
-  @publish @server authenticate(cred : Login.credentials, state : Login.state)
-    : option(Login.state) =
+  @publish @server authenticate(cred : Login.credentials, state : Toolbar.state)
+    : option(Toolbar.state) =
     do Log.debug("[LOGIN]", "authentication: [{cred}]")
     match cred with
     | {none} -> none
@@ -51,19 +51,27 @@ Login =
   @private login_conf : Login.config =
     CLogin.default_config(Random.string(8), authenticate)
 
+  login_btn_cfg = WButton.default_config
+
   login : Login.component =
     CLogin.make(guest_state, login_conf)
 
   login_box() =
+    btn_txt = "Register"
+    onclick = ({click}, (_ -> void))
+    signup = WButton.html(login_btn_cfg, Random.string(8), [onclick], <>{btn_txt}</>)
     <span id=#{login_box_id} class=loginbox>
       {CLogin.html(login)}
+      <span class="signup">
+        Don't have an account yet? {signup}
+      </>
     </>
 
   @client login_switch_btn(on, action) =
-    btn_cfg = WButton.default_config
-    btn_txt = "Sign in/up"
-    actions = [({click}, action)]
-    xhtml = WButton.html(btn_cfg, Random.string(8), actions, <>{btn_txt}</>)
+    control = if on then "↑" else "↓"
+    btn_txt = "Sign in/up {control}"
+    onclick = ({click}, action)
+    xhtml = WButton.html(login_btn_cfg, Random.string(8), [onclick], <>{btn_txt}</>)
     update_dom = if on then Dom.show else Dom.hide
     do update_dom(#{login_box_id})
     { update_xhtml=xhtml }
@@ -77,20 +85,44 @@ Login =
     WSwitch.edit(cfg, sign_in_switch_id, (_ -> void), false)
 
   html() : xhtml =
-    <>
-      {login_switch()}
-      {login_box()}
+    <div id=#toolbar_container>
+      <div id=#toolbar>
+        <div id=#signin>
+          {login_switch()}
+          {login_box()}
+        </>
+      </>
     </>
 
 }}
 
-login_css = css
+toolbar_css = css
   td{}
+  #toolbar_container {
+    position: fixed;
+    top: 0px;
+    overflow: hidden;
+    width: 100%;
+    height: 30px;
+    z-index: 9999;
+    border: 1px dotted ;
+    border-top: none;
+    background: #666;
+  }
+  #toolbar {
+    width: 600px;
+    margin: auto;
+  }
+  #signin {
+    float: right;
+  }
   .loginbox {
     position: fixed;
-    top: 34px;
+    top: 30px;
     background: #666;
+    border: 1px dotted black;
+    border-top: none;
     padding: 12px;
-    border-radius: 8px;
-    border: 1px dotted #CCC;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
   }
