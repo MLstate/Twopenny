@@ -22,7 +22,7 @@ Pages = {{
     ("Twopenny", unimplemented, empty_style)
 
   @client show_new_message(~{newmsg}) =
-    exec([#msgs -<- Msg.render(newmsg, {new})])
+    Dom.transform([#msgs -<- Msg.render(newmsg, {new})])
 
   @client setup_msg_updates(_) =
     chan = Session.make_callback(show_new_message)
@@ -32,7 +32,7 @@ Pages = {{
 
   @client setup_newmsg_box(user)(_) =
     xhtml = WMsgBox.html("msgbox", Msg.create(user, _), MsgFactory.submit)
-    exec([#newmsg <- xhtml])
+    Dom.transform([#newmsg <- xhtml])
 
   user_page(user_ref : User.ref) =
     user_string = User.ref_to_string(user_ref)

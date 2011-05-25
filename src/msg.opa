@@ -71,9 +71,9 @@ Msg = {{
     | ~{ user } -> User.ref_to_anchor(user)
     content = List.map(render_segment, parse(msg))
     date = WDatePrinter.html(WDatePrinter.default_config,
-      uniq(), Msg.get_creation_date(msg))
+      Dom.fresh_id(), Msg.get_creation_date(msg))
     author = Msg.get_author(msg)
-    id = uniq()
+    id = Dom.fresh_id()
     classes = ["msg" | if mode == {new} then ["hidden"] else []]
     ready(_) = match mode with
              | {new} ->

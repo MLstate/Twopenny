@@ -120,7 +120,7 @@ User =
     }
 
   mk_passwd(pass : string) : passwd =
-    md5(pass)
+    Crypto.Hash.md5(pass)
 
 }}
 

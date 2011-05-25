@@ -25,7 +25,6 @@ resources = @static_include_directory("img")
 
 urls : Parser.general_parser(http_request -> resource) =
   parser
-  | {Rule.debug_parse_string(s -> jlog("URL: {s}"))} Rule.fail -> error("")
   | "/favicon." .* -> _req ->
       @static_resource("./img/favicon.png")
   | result={Server.resource_map(resources)} -> _req ->

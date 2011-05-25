@@ -50,13 +50,13 @@ import widgets.{core,button}
         []
     counter_xhtml = <span>{remaining}</>
                  |> apply_css(counter_css, _)
-    do exec([#{get_counter_id(id)} <- counter_xhtml])
+    do Dom.transform([#{get_counter_id(id)} <- counter_xhtml])
     preview =
       if remaining > 0 then
         mk_msg(content) |> Msg.render(_, {preview})
       else
         MSG_TOO_LONG_WARNING
-    do exec([#{get_preview_id(id)} <- preview])
+    do Dom.transform([#{get_preview_id(id)} <- preview])
     enabled = not(String.is_empty(content) || remaining < 0)
     do WButton.set_enabled_state(submit_button_cfg, get_submit_button_id(id),
          enabled)
