@@ -5,8 +5,8 @@
 
 package mlstate.twopenny
 
-import widgets.{loginbox, switch}
-import components.login
+import stdlib.widgets.{loginbox, switch}
+import stdlib.components.login
 
 type Toolbar.state = option(User.ref)
 

@@ -5,6 +5,9 @@
 
 package mlstate.twopenny
 
+import stdlib.web.mail
+import stdlib.crypto
+
 type User.wallpaper =
   { img : option(image)
   ; tile : bool
@@ -37,7 +40,8 @@ type User.t =
   ; wallpaper : User.wallpaper
   }
 
-type User.ref = private(string)
+@abstract
+type User.ref = string
 
 type User.map('a) = ordered_map(User.ref, 'a, String.order)
 
@@ -62,15 +66,15 @@ User =
     { max_height_px = 50 max_width_px = 50 }
 
   get_user_photo_url(user_ref : User.ref) : string =
-    "/img/user-photo/{@unwrap(user_ref)}"
+    "/img/user-photo/{user_ref}"
 
 {{
 
   mk_ref(user : string) : User.ref =
-    @wrap(user)
+    user
 
   get(user_ref : User.ref) : option(User.t) =
-    ?/users[@unwrap(user_ref)]
+    ?/users[user_ref]
 
   @private get_user_optional_image(user_ref, get_photo, default_photo) =
     img =
@@ -89,11 +93,11 @@ User =
     get_user_optional_image(user_ref, (user -> user.wallpaper.img), default_user_wallpaper_img)
 
   ref_to_anchor(user_ref : User.ref) : xhtml =
-    user = @unwrap(user_ref)
+    user = user_ref
     <a href="/user/{user}">@{user}</>
 
   ref_to_string(user_ref : User.ref) : string =
-    @unwrap(user_ref)
+    user_ref
 
   show_msg_photo(user_ref : User.ref) : xhtml =
     get_user_photo_url(user_ref)

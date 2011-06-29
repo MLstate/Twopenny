@@ -5,18 +5,19 @@
 
 package mlstate.twopenny
 
-type Label.ref = private(string)
+@abstract
+type Label.ref = string
 
 Label = {{
 
   mk_ref(label : string) : Label.ref =
-    @wrap(label)
+    label
 
   to_anchor(label_ref : Label.ref) : xhtml =
-    label = @unwrap(label_ref)
+    label = label_ref
     <a href="/label/{label}">#{label}</>
 
   to_string(label: Label.ref) : string =
-    @unwrap(label)
+    label
 
 }}

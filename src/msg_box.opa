@@ -5,7 +5,7 @@
 
 package mlstate.twopenny
 
-import widgets.{core,button}
+import stdlib.widgets.{core,button}
 
 @client WMsgBox =
   MAXIMUM_MESSAGE_LENGTH = 140

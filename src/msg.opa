@@ -5,15 +5,17 @@
 
 package mlstate.twopenny
 
-import widgets.dateprinter
+import stdlib.widgets.dateprinter
 
-type Msg.t = private(
+@abstract
+type Msg.t =
    { author: User.ref
    ; content : string
    ; created_at : Date.date
-   })
+   }
 
-type Msg.ref = private(int)
+@abstract
+type Msg.ref = int
 
 type Msg.map('a) = ordered_map(Msg.ref, 'a, Int.order)
 
@@ -27,16 +29,16 @@ Msg = {{
 
   create(author : User.ref, content : string) : Msg.t =
     msg = { ~author ~content created_at=Date.now() }
-    @wrap(msg)
+    msg
 
   get_creation_date(msg : Msg.t) : Date.date =
-    @unwrap(msg).created_at
+    msg.created_at
 
   get_author(msg : Msg.t) : User.ref =
-    @unwrap(msg).author
+    msg.author
 
   get_content(msg : Msg.t) : string =
-    @unwrap(msg).content
+    msg.content
 
   parse(msg : Msg.t) : list(Msg.segment) =
     word = parser
